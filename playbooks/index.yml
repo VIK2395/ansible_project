@@ -1,0 +1,20 @@
+- name: Play Configure web servers
+  hosts: web_servers
+  gather_facts: False
+  vars: # play vars
+    app_var: override vars_files test # vars_files vars has higher prio
+    playbook_var: playbook_var_value
+  vars_files: # Only for plays, not supported in tasks
+    - ../vars/app_vars.yml  # Must be imported explicitly for playbook. Relative to the playbook's file
+  tasks:
+    - name: Print all variables
+      vars: # task vars
+        task_var: task_var
+      debug:
+        msg: |
+          Host {{ inventory_hostname }}:
+          - App Var: {{ app_var }}
+          - Group Inventory Var: {{ ansible_user }} # imported implicitly from group_vars
+          - Host Inventory Var: {{ http_port }} # imported implicitly from host_vars
+          - Playbook var: {{ playbook_var }}
+          - Task var: {{ task_var }}
